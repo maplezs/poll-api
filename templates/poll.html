@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Main.CSS -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+
+    <title>Halaman Polling</title>
+  </head>
+
+  <body>
+    <div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="container">
+        <div class="row flex-column">
+          <div class="col text-center">
+            <h3>Polling Tempat</h3>
+            <h1 class="fw-bold">{{ place.name }}</h1>
+            <h1 class="fw-bold fs-1" id="poll-number">{{ poll_number }}</h1>
+            <button class="btn btn-primary" id="poll-submit">Vote!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="container">
+        <div class="row">
+          <div class="col"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    let submitButton = document.getElementById("poll-submit");
+    let pollNumber = document.getElementById("poll-number");
+    let id = window.location.pathname.split("/")[2];
+
+    submitButton.addEventListener("click", function () {
+      submitButton.disabled = true;
+      submitButton.innerHTML = "Memuat...";
+      fetch(`http://localhost:5000/poll/${id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(function (res) {
+          return res.json();
+        })
+        .then(function (data) {
+          pollNumber.innerHTML = data.data;
+          submitButton.innerHTML = "Vote";
+          submitButton.disabled = false;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    });
+  </script>
+</html>
