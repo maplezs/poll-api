@@ -4,6 +4,9 @@ hayukapi
 # Requirement Package (Python)
 requirement.txt
 
+# UI HTML
+WebVote.zip
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

@@ -9,23 +9,40 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=False, unique=True)
     photo_url = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), nullable=False)
-    createdAt = db.Column(db.Date)
-    updatedAt = db.Column(db.Date)
+    created_at = db.Column(db.Date)
+    updated_at = db.Column(db.Date)
 
-    place = db.relationship('Place', backref='user', lazy=True)
+    place_form_user = db.relationship('PlaceForm', backref='user', lazy=True)
 
     def __repr__(self):
         return f"Place('{self.id, self.name}')"
 
-class Place(db.Model):
+class PlaceCategory(db.Model):
+
+    __tablename__ = 'place_category_table'
+
+    id = db.Column(db.String(16), primary_key=True)
+    place_category = db.Column(db.String(255), nullable=False, unique=True)
+
+    place_form_cat = db.relationship('PlaceForm', backref='placeCat', lazy=True)
+
+
+    def __repr__(self):
+        return f"Place('{self.id, self.place_category}')"
+
+class PlaceForm(db.Model):
     
-    __tablename__ = 'place_table'
+    __tablename__ = 'place_form_table'
 
     id = db.Column(db.String(16), primary_key=True)
     user_id = db.Column(db.String(16), db.ForeignKey('user_table.id'), nullable=False)
+    category_id = db.Column(db.String(16), db.ForeignKey('place_category_table.id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.String(255), nullable=False)
-    createdAt = db.Column(db.Date)
+    photo_url = db.Column(db.String(255))
+    rate_score = db.Column(db.Float, nullable=False)
+    num_of_voters = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.Date)
 
     poll = db.relationship('Poll', backref='place', lazy=True)
  
@@ -38,8 +55,10 @@ class Poll(db.Model):
     __tablename__ = 'poll_table'
 
     id = db.Column(db.Integer, primary_key=True)
-    place_id = db.Column(db.String(16), db.ForeignKey('place_table.id'), nullable=False)
-    createdAt = db.Column(db.Date)
+    place_id = db.Column(db.String(16), db.ForeignKey('place_form_table.id'), nullable=False)
+    voter_name = db.Column(db.String(255), nullable=False)
+    agree = db.Column(db.Boolean, nullable=False)
+    created_at = db.Column(db.Date)
 
     def __repr__(self):
-        return f"Poll('{self.id}', '{self.createdAt}')"
+        return f"Poll('{self.id}', '{self.created_at}')"

@@ -1,28 +1,37 @@
 import nanoid
 from datetime import datetime
-from flask import request, jsonify, url_for, render_template
+from flask import request, jsonify, url_for, render_template, flash
 
 from script import app, db
-from script.models import Place, Poll
+from script.models import PlaceForm, Poll
 
 @app.route('/poll/<string:id>', methods=['GET', 'POST'])
 def poll_submit(id):
-    place = Place.query.filter_by(id=id).first_or_404()
+    place = PlaceForm.query.first_or_404(id)
     if request.method == 'GET':
-        place = Place.query.get_or_404(id)
-        poll_number = Poll.query.filter(Poll.place_id == id).count()
-        return render_template('poll.html', place=place, poll_number=poll_number)
+        agree = 0
+        disagree = 0
+        polls = Poll.query.filter(Poll.place_id==id).all()
+        for poll in polls:
+            if poll.agree:
+                agree += 1
+            else:
+                disagree += 1 
+        return render_template('index.html', place=place, polls=polls, agree=agree, disagree=disagree)
     else:
-        poll = Poll(place_id=id, createdAt=datetime.now())
+        poll = Poll(place_id=id, voter_name=request.form['name'], agree=1 if request.form['vote']=='1' else 0, created_at=datetime.now())
         db.session.add(poll)
         db.session.commit()
-        place = Place.query.get_or_404(id)
-        poll_number = Poll.query.filter(Poll.place_id == id).count()
-        return jsonify({
-            'status': 'sukses',
-            'message': 'Voting berhasil dilakukan!',
-            'data': poll_number
-        }) 
+        agree = 0
+        disagree = 0
+        polls = Poll.query.filter(Poll.place_id==id).all()
+        for poll in polls:
+            if poll.agree:
+                agree += 1
+            else:
+                disagree += 1 
+        flash('Vote berhasil dilakukan!', category='success')
+        return render_template('index.html', place=place, polls=polls, agree=agree, disagree=disagree) 
 
 @app.route('/poll/create', methods=['POST'])
 def poll_create():
