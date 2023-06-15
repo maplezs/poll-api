@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      href="{{ url_for('static', filename='css/styles.css') }}"
+      rel="stylesheet"
+    />
+    <script
+      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>HaYuk! - Login</title>
+  </head>
+  <body>
+    <div class="container-fluid min-vh-100">
+      <div class="row justify-content-center py-5">
+        <form
+          method="POST"
+          action=""
+          class="col-xl-4 col-lg-6 col-md-8 col-sm-10 my-3 py-3 rounded border shadow"
+        >
+          {{ form.hidden_tag() }}
+          <fieldset class="form-group">
+            <div
+              class="d-flex flex-column justify-content-center align-items-center"
+            >
+              <div class="d-flex justify-content-center py-3 rounded bg-black">
+                <img
+                  src="{{ url_for('static', filename='logo/logo.svg') }}"
+                  alt="Logo"
+                  height="24"
+                  class="img-fluid w-25"
+                />
+              </div>
+              <legend class="text-center">HaYuk! Admin Page</legend>
+            </div>
+            <div class="container-fluid mt-3">
+              <div class="row">
+                <div class="col-md-8 offset-md-2">
+                  {{ form.email.label(class="form-control-label") }} {% if
+                  form.email.errors %} {{ form.email(class="form-control
+                  form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %} {{ form.email(class="form-control form-control-lg")
+                  }} {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="container-fluid mt-3">
+              <div class="row">
+                <div class="col-md-8 offset-md-2">
+                  {{ form.password.label(class="form-control-label") }} {% if
+                  form.password.errors %} {{ form.password(class="form-control
+                  form-control-lg is-invalid") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %} {{ form.password(class="form-control
+                  form-control-lg") }} {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="container-fluid mt-3">
+              <div class="row">
+                <div class="col-md-8 offset-md-2">
+                  {{ form.remember(class="form-check-input") }} {{
+                  form.remember.label(class="form-check-label") }}
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-8 offset-md-2">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %} {% for category, message in messages %}
+                <p class="text-{{ category }} text-center mt-3">
+                  {{ message }}
+                </p>
+                {% endfor %} {% endif %} {% endwith %}
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-3 text-center">
+            {{ form.submit(class="btn btn-primary w-25") }}
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+{% extends 'admin/components/layout.html' %} {% block content %}
+
+<div id="layoutSidenav_content">
+  <main>
+    <div class="container-fluid px-4">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <p class="alert alert-{{ category }} mt-3">{{ message }}</p>
+      {% endfor %} {% endif %} {% endwith %}
+      <h1 class="mt-4">Daftar Pengguna</h1>
+      <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Manajemen pengguna HaYuk!</li>
+      </ol>
+
+      <div class="card mb-4">
+        <div class="card-header">
+          <i class="fas fa-table me-1"></i>
+          Daftar Pengguna
+        </div>
+        <div class="card-body">
+          <table id="datatablesSimple">
+            <thead>
+              <tr>
+                <th>Nama</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Terdaftar</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users %}
+              <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.role.name.capitalize() }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.created_at }}</td>
+                <td>
+                  <form
+                    action=""
+                    method="POST"
+                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna ini?')"
+                  >
+                    {{ form.hidden_tag() }} {{ form.user_id(value=user.id) }} {{
+                    form.submit(class="btn btn-danger")}}
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock content %}

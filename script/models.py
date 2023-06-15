@@ -1,10 +1,32 @@
-from script import db
+from flask_login import UserMixin
 
-class User(db.Model):
+from script import db, login_manager
+
+@login_manager.user_loader
+def load_user(id_user):
+    return User.query.get(str(id_user))
+
+class Role(db.Model):
+
+    __tablename__ = 'role_table'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    created_at = db.Column(db.Date)
+    updated_at = db.Column(db.Date)
+
+    user = db.relationship('User', backref='role', lazy=True)
+
+    def __repr__(self):
+        return f"Role('{self.id, self.name}')"
+
+
+class User(db.Model, UserMixin):
 
     __tablename__ = 'user_table'
 
     id = db.Column(db.String(16), primary_key=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('role_table.id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     photo_url = db.Column(db.String(255), unique=True)
@@ -12,10 +34,10 @@ class User(db.Model):
     created_at = db.Column(db.Date)
     updated_at = db.Column(db.Date)
 
-    place_form_user = db.relationship('PlaceForm', backref='user', lazy=True)
+    place_forms = db.relationship('PlaceForm', backref='user', lazy=True)
 
     def __repr__(self):
-        return f"Place('{self.id, self.name}')"
+        return f"User('{self.id, self.name}')"
 
 class PlaceCategory(db.Model):
 
@@ -24,11 +46,11 @@ class PlaceCategory(db.Model):
     id = db.Column(db.String(16), primary_key=True)
     place_category = db.Column(db.String(255), nullable=False, unique=True)
 
-    place_form_cat = db.relationship('PlaceForm', backref='placeCat', lazy=True)
+    place_forms = db.relationship('PlaceForm', backref='place_category', lazy=True)
 
 
     def __repr__(self):
-        return f"Place('{self.id, self.place_category}')"
+        return f"PlaceCategory('{self.id, self.place_category}')"
 
 class PlaceForm(db.Model):
     
@@ -44,10 +66,10 @@ class PlaceForm(db.Model):
     num_of_voters = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.Date)
 
-    poll = db.relationship('Poll', backref='place', lazy=True)
+    poll = db.relationship('Poll', backref='place_form', lazy=True)
  
     def __repr__(self):
-        return f"Place('{self.id, self.name}')"
+        return f"PlaceForm('{self.id, self.name}')"
 
 
 class Poll(db.Model): 
